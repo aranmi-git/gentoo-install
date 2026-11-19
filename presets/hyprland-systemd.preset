@@ -1,0 +1,40 @@
+# gentoo-install preset v1
+# name: hyprland-systemd
+# id: hyprland-systemd@2215f32ac0a64c1e
+# Made by gentoo-install.sh 1.0 on 2026-11-18.
+# Load it with:  bash gentoo-install.sh --preset <this file, an https link or a name>
+# Disk, passwords and users are never stored here; the installer asks for them.
+INIT=systemd
+BUILD=bin
+CPU_JOBS=auto
+EMERGE_JOBS=auto
+CPU_MARCH=generic
+KERNEL=bin
+GURU=0
+FS=btrfs
+ENC=luks2
+GRUB_BOOT=encrypted
+BOOTLOADER=systemd-boot
+SECUREBOOT=0
+SNAPPER=1
+SWAP=zram
+SWAP_SIZE=4
+MIRROR=auto
+HOST_NAME=gentoo
+KEYMAP=us
+LOCALE=en_US.UTF-8
+TIMEZONE=UTC
+NET=nm
+DESKTOP=hyprland
+DM=auto
+DOTS=cachyos-hyprland
+GPU=auto
+APPS=firefox git
+GAMING=
+PERIPH=
+EXTRA_PKGS=
+BS_PROGS=
+BS_DOTFILES=
+BS_BRANCH=
+BS_SHELL=bash
+BS_POWER=0

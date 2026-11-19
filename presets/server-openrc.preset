@@ -1,0 +1,40 @@
+# gentoo-install preset v1
+# name: server-openrc
+# id: server-openrc@851f4f98cf5c7932
+# Made by gentoo-install.sh 1.0 on 2026-11-18.
+# Load it with:  bash gentoo-install.sh --preset <this file, an https link or a name>
+# Disk, passwords and users are never stored here; the installer asks for them.
+INIT=openrc
+BUILD=bin
+CPU_JOBS=auto
+EMERGE_JOBS=auto
+CPU_MARCH=generic
+KERNEL=bin
+GURU=0
+FS=ext4
+ENC=luks2
+GRUB_BOOT=encrypted
+BOOTLOADER=grub
+SECUREBOOT=0
+SNAPPER=0
+SWAP=zram
+SWAP_SIZE=4
+MIRROR=auto
+HOST_NAME=gentoo
+KEYMAP=us
+LOCALE=en_US.UTF-8
+TIMEZONE=UTC
+NET=dhcpcd
+DESKTOP=none
+DM=auto
+DOTS=
+GPU=auto
+APPS=openssh git htop
+GAMING=
+PERIPH=
+EXTRA_PKGS=
+BS_PROGS=
+BS_DOTFILES=
+BS_BRANCH=
+BS_SHELL=bash
+BS_POWER=0
