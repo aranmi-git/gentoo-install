@@ -990,10 +990,10 @@ menu_build() {
 				if [[ $c == auto || $c =~ ^[1-9][0-9]?$ ]]; then EMERGE_JOBS=$c; else msg "Enter 'auto' or a number from 1 to 99." "Parallel packages"; fi
 				;;
 			cpu)
-				c=$(ui --title " CPU optimization " --default-item "$CPU_MARCH" --menu "Instruction set the packages are built for (-march):" 13 78 3 \
-					generic "x86-64 - runs on every 64-bit PC; matches Gentoo's prebuilt packages" \
-					v3 "x86-64-v3 - AVX2 era (2015+)${v3}; prebuilt set exists" \
-					native "This exact CPU - source builds only; prebuilt packages stay generic") || continue
+				c=$(ui --title " CPU optimization " --default-item "$CPU_MARCH" --menu "Instruction set the packages are built for (-march). Prebuilt packages exist for x86-64 and x86-64-v3; with 'this exact CPU' only compiled packages use it." 15 78 3 \
+					generic "x86-64 - any 64-bit PC; matches the prebuilt packages" \
+					v3 "x86-64-v3 - AVX2 CPUs, 2015+${v3}" \
+					native "This exact CPU - for source builds") || continue
 				if [[ $c == v3 ]] && ! v3_supported; then msg "This CPU does not support x86-64-v3; programs built for it would not start." "CPU"; continue; fi
 				CPU_MARCH=$c
 				;;
@@ -2134,7 +2134,7 @@ write_make_conf() {
 # /etc/portage/make.conf - written by gentoo-install.sh
 # The stage3's original is kept as make.conf.stage3. See: man make.conf
 
-# Compiler: -march=$(march_flag) ($(case $CPU_MARCH in native) echo "this CPU" ;; v3) echo "x86-64-v3" ;; *) echo "any x86-64 PC" ;; esac))
+# Compiler: -march=$(march_flag) ($(case $CPU_MARCH in native) echo "this CPU" ;; v3) echo "AVX2-era CPUs, 2015 and later" ;; *) echo "any x86-64 PC" ;; esac))
 COMMON_FLAGS="-O2 -pipe -march=$(march_flag)"
 CFLAGS="\${COMMON_FLAGS}"
 CXXFLAGS="\${COMMON_FLAGS}"
@@ -2155,9 +2155,11 @@ VIDEO_CARDS="$(video_cards)"
 INPUT_DEVICES="libinput"
 GRUB_PLATFORMS="$(if [[ $FIRMWARE == uefi ]]; then if [[ $EFI_BITS == 32 ]]; then echo efi-32; else echo efi-64; fi; else echo pc; fi)"
 L10N="$(locale_l10n)"
-$(if [[ $MIRROR == rank && -s /tmp/gentoo-install.mirrors ]]; then printf 'GENTOO_MIRRORS="%s"\n' "$(paste -sd' ' /tmp/gentoo-install.mirrors)"; fi)
+$(if [[ $MIRROR == rank && -s /tmp/gentoo-install.mirrors ]]; then printf '\n# Fastest mirrors, timed by mirrorselect\nGENTOO_MIRRORS="%s"\n' "$(paste -sd' ' /tmp/gentoo-install.mirrors)"; fi)
 $(if secureboot_on; then printf '\n# Secure Boot: kernels and modules are signed with the sbctl keys\nSECUREBOOT_SIGN_KEY="/var/lib/sbctl/keys/db/db.key"\nSECUREBOOT_SIGN_CERT="/var/lib/sbctl/keys/db/db.pem"\nMODULES_SIGN_KEY="/var/lib/sbctl/keys/db/db.key"\nMODULES_SIGN_CERT="/var/lib/sbctl/keys/db/db.pem"\n'; fi)
 MK
+	cat -s "$f" >"$f.tmp" && mv "$f.tmp" "$f"
+	sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$f"
 	echo "make.conf: MAKEOPTS=-j$j, $e package(s) at once, -march=$(march_flag), $([[ $BUILD == bin ]] && echo 'prebuilt packages' || echo 'source builds')"
 }
 
@@ -2193,6 +2195,11 @@ write_package_use() {
 	} >"$d/00-gentoo-install"
 	# Firmware licences (linux-firmware is redistributable; microcode too).
 	printf 'sys-kernel/linux-firmware linux-fw-redistributable\nsys-firmware/intel-microcode intel-ucode\n' >"$TARGET/etc/portage/package.license/00-gentoo-install"
+	# emerge's autounmask writes into the last file of each folder: give it its own.
+	local x
+	for x in package.use package.accept_keywords package.license; do
+		[[ -e $TARGET/etc/portage/$x/zz-autounmask ]] || printf '# Changes emerge needed (autounmask), added by emerge itself.\n' >"$TARGET/etc/portage/$x/zz-autounmask"
+	done
 }
 
 enable_overlays() {

@@ -19,7 +19,8 @@ First release, built on the same menus as
   LibreOffice and Telegram when prebuilt is chosen.
 - **Profile** picked from the choices (23.0, desktop, plasma, gnome, systemd).
 - **Unattended emerge**: autounmask writes and accepts needed USE, keyword and
-  licence changes.
+  licence changes, into `zz-autounmask` files of their own so the installer's
+  files stay readable.
 - **Distribution kernel** (prebuilt or compiled) with installkernel + dracut;
   GRUB, systemd-boot and UKI entries follow kernel updates automatically.
 - **Secure Boot**: sbctl keys before the kernel is emerged, so the

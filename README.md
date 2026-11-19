@@ -66,6 +66,41 @@ anyway. The CPU's instruction-set flags (`CPU_FLAGS_X86`) are filled in by
 `cpuid2cpuflags`. Everything stays editable later in `/etc/portage/make.conf`,
 which explains each line.
 
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/build-packages.png" alt="Prebuilt or compiled packages"><br><sub><b>Packages:</b> prebuilt where they exist, or compile everything</sub></td>
+<td width="50%"><img src="docs/screenshots/build-cores.png" alt="CPU cores input"><br><sub><b>CPU cores:</b> <code>auto</code> or a number; more threads than you have is allowed, with a warning</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/build-parallel.png" alt="Packages built at once"><br><sub><b>Packages at once:</b> emerge <code>--jobs</code>, held back by the load average</sub></td>
+<td><img src="docs/screenshots/build-cpu.png" alt="CPU optimization"><br><sub><b>Optimize for:</b> x86-64-v3 is offered only if the CPU can run it</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/build-explain.png" alt="Explanation of the build settings"><br><sub><b>What do these mean?</b> Each setting in plain words</sub></td>
+<td><img src="docs/screenshots/build-source.png" alt="Build settings for a source install"><br><sub>Set up for compiling: 12 cores, 2 packages at once, this exact CPU</sub></td>
+</tr>
+</table>
+
+### What it writes to /etc/portage
+
+Here is what a KDE Plasma + Hyprland install writes on a Ryzen 7 7700X (16
+threads, 32 GiB, AMD graphics, Secure Boot, prebuilt x86-64-v3 packages):
+
+<div align="center">
+<img src="docs/screenshots/make-conf.png" alt="The make.conf written by the installer" width="720">
+</div>
+
+USE flags for single packages, the CPU's instruction-set flags, testing
+keywords for the overlay only, and Gentoo's binary host switched to the v3
+package set:
+
+<div align="center">
+<img src="docs/screenshots/portage-files.png" alt="package.use, package.accept_keywords and binrepos.conf" width="720">
+</div>
+
+Changes that emerge needs later (autounmask) go to files of their own in
+the same folders, so the installer's files stay as shown.
+
 ## How it installs
 
 1. Downloads the newest **stage3** for your choice (OpenRC or systemd, desktop
@@ -110,6 +145,10 @@ overlay; turn it on in **Overlays**, and it turns on by itself for Ly, niri,
 river, LeftWM and some peripheral tools) and **hyproverlay** (Hyprland, which
 left Gentoo's repository in 2026). Testing keywords are accepted for those
 repositories only, and the installer tells you before it enables them.
+
+<div align="center">
+<img src="docs/screenshots/overlays.png" alt="The Overlays menu" width="600">
+</div>
 
 ## Keeping it up to date
 
